@@ -1,0 +1,23 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('payments', function (Blueprint $table) {
+            $table->string('gateway_name')->nullable()->after('payment_method');
+            $table->string('gateway_tracking_code')->nullable()->after('gateway_name');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('payments', function (Blueprint $table) {
+            $table->dropColumn(['gateway_name', 'gateway_tracking_code']);
+        });
+    }
+};
