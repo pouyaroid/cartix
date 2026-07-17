@@ -16,9 +16,6 @@ use App\Http\Controllers\Dashboard\LandingPageBuilderController;
 use App\Http\Controllers\Dashboard\LandingPagePreviewController;
 use App\Http\Controllers\Dashboard\LandingPagePublishController;
 use App\Http\Controllers\Dashboard\LandingPageAnalyticsController;
-use App\Http\Controllers\Api\BlockApiController;
-use App\Http\Controllers\Api\AutosaveApiController;
-use App\Http\Controllers\Api\VersionApiController;
 use App\Http\Controllers\Api\AnalyticsApiController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\UserController;
@@ -32,7 +29,6 @@ use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\AdminLandingPageController;
 use App\Http\Controllers\Admin\AdminLandingPageTemplateController;
-use App\Http\Controllers\Admin\AdminLandingPageWidgetController;
 use App\Http\Controllers\Public\PublicCardController;
 use App\Http\Controllers\Public\PublicLandingPageController;
 use App\Http\Controllers\Public\QrRedirectController;
@@ -159,16 +155,6 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('dashboard.')
 */
 
 Route::middleware(['auth', 'verified'])->prefix('api')->name('api.')->group(function () {
-    Route::get('/landing-pages/{landingPage}/blocks/tree', [BlockApiController::class, 'tree']);
-    Route::get('/landing-pages/{landingPage}/blocks/{block}', [BlockApiController::class, 'show']);
-    Route::post('/landing-pages/{landingPage}/blocks', [BlockApiController::class, 'store']);
-    Route::put('/landing-pages/{landingPage}/blocks/{block}', [BlockApiController::class, 'update']);
-    Route::delete('/landing-pages/{landingPage}/blocks/{block}', [BlockApiController::class, 'destroy']);
-    Route::post('/landing-pages/{landingPage}/blocks/reorder', [BlockApiController::class, 'reorder']);
-    Route::post('/landing-pages/{landingPage}/blocks/{block}/duplicate', [BlockApiController::class, 'duplicate']);
-    Route::post('/landing-pages/{landingPage}/autosave', [AutosaveApiController::class, 'save']);
-    Route::get('/landing-pages/{landingPage}/versions', [VersionApiController::class, 'index']);
-    Route::post('/landing-pages/{landingPage}/versions/{version}/restore', [VersionApiController::class, 'restore']);
     Route::post('/analytics/event', [AnalyticsApiController::class, 'track']);
 });
 
@@ -231,10 +217,6 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::get('/landing-page-templates/{landingPageTemplate}/edit', [AdminLandingPageTemplateController::class, 'edit'])->name('landing-page-templates.edit');
     Route::put('/landing-page-templates/{landingPageTemplate}', [AdminLandingPageTemplateController::class, 'update'])->name('landing-page-templates.update');
     Route::delete('/landing-page-templates/{landingPageTemplate}', [AdminLandingPageTemplateController::class, 'destroy'])->name('landing-page-templates.destroy');
-
-    // Landing Page Widgets
-    Route::get('/landing-page-widgets', [AdminLandingPageWidgetController::class, 'index'])->name('landing-page-widgets.index');
-    Route::post('/landing-page-widgets/{widget}/toggle', [AdminLandingPageWidgetController::class, 'toggle'])->name('landing-page-widgets.toggle');
 });
 
 /*

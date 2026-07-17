@@ -20,17 +20,9 @@ class LandingPagePreviewController extends Controller
 
         $landingPage->load(['blocks' => fn($q) => $q->orderBy('sort_order')]);
 
-        $html = app(LandingPageService::class)->renderPage($landingPage);
-
-        // Load fonts used in this page
-        $usedFonts = [];
-        foreach ($landingPage->blocks as $block) {
-            $styles = $block->styles ?? [];
-            $desktop = $styles['desktop'] ?? [];
-            if (!empty($desktop['font-family']) && !in_array($desktop['font-family'], $usedFonts)) {
-                $usedFonts[] = $desktop['font-family'];
-            }
-        }
+        $service = app(LandingPageService::class);
+        $html = $service->renderPage($landingPage);
+        $usedFonts = $service->getUsedFonts($landingPage);
         $fontLinks = app(PersianFontService::class)->loadFonts($usedFonts);
 
         return view('dashboard.landing-pages.preview', [

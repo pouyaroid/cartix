@@ -27,17 +27,9 @@ class PublicLandingPageController extends Controller
 
         $page->incrementViews();
 
-        $html = app(LandingPageService::class)->renderPage($page);
-
-        // Load fonts used in this page
-        $usedFonts = [];
-        foreach ($page->blocks as $block) {
-            $styles = $block->styles ?? [];
-            $desktop = $styles['desktop'] ?? [];
-            if (!empty($desktop['font-family']) && !in_array($desktop['font-family'], $usedFonts)) {
-                $usedFonts[] = $desktop['font-family'];
-            }
-        }
+        $service = app(LandingPageService::class);
+        $html = $service->renderPage($page);
+        $usedFonts = $service->getUsedFonts($page);
         $fontLinks = app(PersianFontService::class)->loadFonts($usedFonts);
 
         return view('public.landing-page', [
