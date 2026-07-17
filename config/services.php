@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'maps' => [
+        'google_key' => env('GOOGLE_MAPS_KEY'),
+        'neshan_key' => env('NESHAN_API_KEY'),
+    ],
+
 ];

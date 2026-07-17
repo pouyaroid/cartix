@@ -91,10 +91,23 @@
             $iconSize = $content['size'] ?? '24px';
             $iconColor = $content['color'] ?? '#4f46e5';
             $textAlign = $ds['text-align'] ?? 'center';
+            $iconBg = $ds['icon-bg'] ?? '#eef2ff';
+            $iconRadius = $ds['icon-radius'] ?? '14px';
+            $hoverStyles = $allStyles['hover'] ?? [];
+            $hoverColor = $hoverStyles['color'] ?? '';
+            $hoverBg = $hoverStyles['icon-bg'] ?? '';
+            $hoverScale = $hoverStyles['icon-scale'] ?? '';
+            $hoverTransition = $hoverStyles['transition'] ?? 'all 0.2s ease';
+            $hoverOpacity = $hoverStyles['opacity'] ?? '';
+            $opacity = $ds['opacity'] ?? '';
         @endphp
+        <style>
+            .icon-wrap-{{ $blockId }}:hover .icon-inner-{{ $blockId }}{ {!! $hoverColor ? "color:{$hoverColor};" : '' !!} {!! $hoverBg ? "background:{$hoverBg};" : '' !!} {!! $hoverScale ? "transform:scale({$hoverScale});" : '' !!} {!! $hoverOpacity ? "opacity:{$hoverOpacity};" : '' !!} }
+            .icon-inner-{{ $blockId }}{ transition: {!! $hoverTransition ?: 'all 0.2s ease' !!} {!! $hoverScale ? ';transform:scale(1)' : '' !!} }
+        </style>
         <div style="text-align:{{ $textAlign }}">
-            <div style="width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;background:#eef2ff;border-radius:14px">
-                <i class="bi {{ $iconName }}" style="font-size:{{ $iconSize }};color:{{ $iconColor }}"></i>
+            <div class="icon-wrap-{{ $blockId }}" style="display:inline-flex;align-items:center;justify-content:center;background:{{ $iconBg }};border-radius:{{ $iconRadius }};width:56px;height:56px;{{ $opacity ? "opacity:{$opacity};" : '' }}">
+                <i class="bi {{ $iconName }} icon-inner-{{ $blockId }}" style="font-size:{{ $iconSize }};color:{{ $iconColor }}"></i>
             </div>
         </div>
 
@@ -136,8 +149,9 @@
         </div>
 
     @elseif($component === 'widget-map')
-        <div style="height:{{ $content['height'] ?? '300px' }};background:#e0e7ff;border-radius:12px;display:flex;align-items:center;justify-content:center">
-            <i class="bi bi-geo-alt" style="font-size:36px;color:#6366f1"></i>
+        @php $mapSettings = array_merge($content, ['height' => $content['height'] ?? '400px']); @endphp
+        <div style="height:{{ $mapSettings['height'] }};border-radius:{{ $ds['border-radius'] ?? '12px' }};overflow:hidden;background:#f3f4f6">
+            {!! \App\Services\Maps\MapProviderFactory::renderMap($mapSettings) !!}
         </div>
 
     @elseif($component === 'content-list')

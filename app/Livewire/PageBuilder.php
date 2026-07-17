@@ -19,12 +19,18 @@ class PageBuilder extends Component
     public string $widgetSearch = '';
     public bool $isDirty = false;
 
+    public string $iconSearch = '';
+    public string $iconCategory = 'all';
+    public array $recentIcons = [];
+    public array $favoriteIcons = [];
+
     protected $listeners = [
         'blockUpdated' => 'refreshBlocks',
         'blockDeleted' => 'refreshBlocks',
         'blockReordered' => 'handleReorder',
         'save' => 'save',
         'confirmDeleteBlock' => 'deleteBlock',
+        'mediaSelected' => 'onMediaSelected',
     ];
 
     public function mount(LandingPage $page): void
@@ -303,6 +309,37 @@ class PageBuilder extends Component
         $this->dispatch('show-toast', ['type' => 'success', 'message' => 'ذخیره شد']);
     }
 
+    public function onMediaSelected(array $data): void
+    {
+        $url = $data['url'] ?? null;
+        $blockId = $data['blockId'] ?? null;
+        $returnTo = $data['returnTo'] ?? null;
+        $key = $data['key'] ?? null;
+        $idx = $data['idx'] ?? null;
+        $fieldKey = $data['fieldKey'] ?? null;
+
+        if (!$url || !$blockId) return;
+
+        if ($returnTo === 'widget-image' || $returnTo === 'widget-logo') {
+            $this->updateBlockContent((int) $blockId, 'src', $url);
+        } elseif ($key !== null && $idx !== null && $fieldKey) {
+            $block = LandingPageBlock::find((int) $blockId);
+            if (!$block) return;
+
+            $content = $block->content ?? [];
+            if (!isset($content[$key]) || !is_array($content[$key])) return;
+
+            $idx = (int) $idx;
+            if (isset($content[$key][$idx]) && is_array($content[$key][$idx])) {
+                $content[$key][$idx][$fieldKey] = $url;
+            }
+            $block->update(['content' => $content]);
+        }
+
+        $this->refreshBlocks();
+        $this->isDirty = true;
+    }
+
     public function getUsedFonts(): array
     {
         $fonts = [];
@@ -314,6 +351,11 @@ class PageBuilder extends Component
             }
         }
         return $fonts;
+    }
+
+    public function openMediaPickerFor(string $returnTo, ?int $blockId = null, ?string $key = null, ?string $idx = null, ?string $fieldKey = null): void
+    {
+        $this->dispatch('openMediaPicker', [$returnTo, $blockId, $key, $idx, $fieldKey]);
     }
 
     public function getWidgetCategories(): array
@@ -373,6 +415,43 @@ class PageBuilder extends Component
         return $labels[$component] ?? $component;
     }
 
+    public function selectIcon(int $blockId, string $iconClass): void
+    {
+        $this->updateBlockContent($blockId, 'name', $iconClass);
+
+        $this->recentIcons = array_filter($this->recentIcons, fn($i) => $i !== $iconClass);
+        array_unshift($this->recentIcons, $iconClass);
+        $this->recentIcons = array_slice($this->recentIcons, 0, 10);
+    }
+
+    public function toggleFavoriteIcon(string $iconClass): void
+    {
+        $key = array_search($iconClass, $this->favoriteIcons);
+        if ($key !== false) {
+            array_splice($this->favoriteIcons, $key, 1);
+        } else {
+            $this->favoriteIcons[] = $iconClass;
+        }
+    }
+
+    public function getIconCategories(): array
+    {
+        return \App\Data\IconData::getCategories();
+    }
+
+    public function getFilteredIcons(): array
+    {
+        if (!empty($this->iconSearch)) {
+            return \App\Data\IconData::searchIcons($this->iconSearch);
+        }
+
+        $categories = \App\Data\IconData::getCategories();
+        if ($this->iconCategory === 'all') {
+            return \App\Data\IconData::getAllIcons();
+        }
+        return $categories[$this->iconCategory]['icons'] ?? [];
+    }
+
     public function render()
     {
         return view('livewire.page-builder');
@@ -412,7 +491,12 @@ class PageBuilder extends Component
             ],
             'widget-icon' => [
                 'content' => ['name' => 'bi-star', 'size' => '24px', 'color' => '#4f46e5'],
-                'styles' => ['desktop' => ['text-align' => 'center'], 'tablet' => [], 'mobile' => []],
+                'styles' => [
+                    'desktop' => ['text-align' => 'center', 'icon-bg' => '#eef2ff', 'icon-radius' => '14px'],
+                    'hover' => [],
+                    'tablet' => [],
+                    'mobile' => [],
+                ],
             ],
             'widget-logo' => [
                 'content' => ['mode' => 'icon', 'icon' => 'bi-badge-ad', 'src' => '', 'alt' => '', 'link' => ''],
@@ -433,8 +517,27 @@ class PageBuilder extends Component
                 'styles' => ['desktop' => [], 'tablet' => [], 'mobile' => []],
             ],
             'widget-map' => [
-                'content' => ['height' => '300px'],
-                'styles' => ['desktop' => [], 'tablet' => [], 'mobile' => []],
+                'content' => [
+                    'provider' => 'google',
+                    'lat' => '35.699739',
+                    'lng' => '51.338097',
+                    'address' => '',
+                    'embedUrl' => '',
+                    'zoom' => 12,
+                    'mapType' => 'roadmap',
+                    'showMarker' => true,
+                    'markerTitle' => '',
+                    'markerDescription' => '',
+                    'markerColor' => '#e74c3c',
+                    'fullscreen' => false,
+                    'zoomControl' => true,
+                    'streetView' => false,
+                    'scrollWheel' => true,
+                    'draggable' => true,
+                    'doubleClickZoom' => true,
+                    'height' => '400px',
+                ],
+                'styles' => ['desktop' => ['border-radius' => '12px', 'overflow' => 'hidden'], 'tablet' => [], 'mobile' => []],
             ],
             'content-card' => [
                 'content' => [

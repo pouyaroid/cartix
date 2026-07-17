@@ -141,19 +141,20 @@
             @endif
         </div>
     </div>
-</div>
+    @livewire('media-picker')
 
-<script>
-document.addEventListener('livewire:init', () => {
-    Livewire.on('show-toast', (data) => {
-        if (typeof Swal !== 'undefined') {
-            Swal.fire({
-                toast: true, position: 'top-end',
-                icon: data[0].type || 'info',
-                title: data[0].message,
-                showConfirmButton: false, timer: 2000,
-            });
-        }
+    <script>
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('show-toast', (data) => {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    toast: true, position: 'top-end',
+                    icon: data[0].type || 'info',
+                    title: data[0].message,
+                    showConfirmButton: false, timer: 2000,
+                });
+            }
+        });
     });
-});
-</script>
+    </script>
+</div>

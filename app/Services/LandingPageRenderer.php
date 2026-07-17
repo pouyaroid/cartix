@@ -60,13 +60,25 @@ class LandingPageRenderer
 
         $hoverCss = '';
         if (!empty($hoverStyles)) {
-            $hoverInline = $this->buildInlineStyles($hoverStyles);
-            if ($hoverInline) {
-                $blockId = $block['id'] ?? 0;
-                $sel = $component === 'widget-button'
-                    ? ".lp-block-{$blockId} .lp-btn"
-                    : ".lp-block-{$blockId}";
-                $hoverCss = "{$sel}:hover{{$hoverInline}}";
+            $blockId = $block['id'] ?? 0;
+            if ($component === 'widget-icon') {
+                $hoverParts = [];
+                if (!empty($hoverStyles['color'])) $hoverParts[] = "color:{$this->e($hoverStyles['color'])}";
+                if (!empty($hoverStyles['icon-bg'])) $hoverParts[] = "background:{$this->e($hoverStyles['icon-bg'])}";
+                if (!empty($hoverStyles['icon-scale'])) $hoverParts[] = "transform:scale({$this->e($hoverStyles['icon-scale'])})";
+                if (!empty($hoverStyles['opacity'])) $hoverParts[] = "opacity:{$this->e($hoverStyles['opacity'])}";
+                if (!empty($hoverParts)) {
+                    $transition = $hoverStyles['transition'] ?? 'all 0.2s ease';
+                    $hoverCss = ".icon-hover-{$blockId}:hover{".implode(';', $hoverParts).";transition:{$this->e($transition)}}";
+                }
+            } else {
+                $hoverInline = $this->buildInlineStyles($hoverStyles);
+                if ($hoverInline) {
+                    $sel = $component === 'widget-button'
+                        ? ".lp-block-{$blockId} .lp-btn"
+                        : ".lp-block-{$blockId}";
+                    $hoverCss = "{$sel}:hover{{$hoverInline}}";
+                }
             }
         }
 
@@ -119,7 +131,14 @@ class LandingPageRenderer
                 $iconSize = $content['size'] ?? '24px';
                 $iconColor = $content['color'] ?? '#4f46e5';
                 $textAlign = $ds['text-align'] ?? 'center';
-                return "<div style=\"text-align:{$textAlign}\"><div style=\"width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;background:#eef2ff;border-radius:14px\"><i class=\"bi {$this->e($iconName)}\" style=\"font-size:{$this->e($iconSize)};color:{$this->e($iconColor)}\"></i></div></div>";
+                $iconBg = $ds['icon-bg'] ?? '#eef2ff';
+                $iconRadius = $ds['icon-radius'] ?? '14px';
+                $opacity = $ds['opacity'] ?? '';
+                $blockId = $block['id'] ?? 0;
+                $wrapStyle = "display:inline-flex;align-items:center;justify-content:center;background:{$this->e($iconBg)};border-radius:{$this->e($iconRadius)};width:56px;height:56px";
+                if ($opacity) $wrapStyle .= ";opacity:{$this->e($opacity)}";
+                $innerStyle = "font-size:{$this->e($iconSize)};color:{$this->e($iconColor)}";
+                return "<div style=\"text-align:{$textAlign}\"><div class=\"icon-hover-{$blockId}\" style=\"{$wrapStyle}\"><i class=\"bi {$this->e($iconName)}\" style=\"{$innerStyle}\"></i></div></div>";
 
             case 'widget-logo':
                 return $this->renderLogo($content, $ds);
@@ -128,8 +147,8 @@ class LandingPageRenderer
                 return $this->renderSocial($content, $ds);
 
             case 'widget-map':
-                $mapHeight = $content['height'] ?? '300px';
-                return "<div style=\"height:{$this->e($mapHeight)};background:#e0e7ff;border-radius:12px;display:flex;align-items:center;justify-content:center;{$styles}\"><i class=\"bi bi-geo-alt\" style=\"font-size:36px;color:#6366f1\"></i></div>";
+                $mapSettings = array_merge($content, ['height' => $content['height'] ?? '400px']);
+                return \App\Services\Maps\MapProviderFactory::renderMap($mapSettings);
 
             case 'widget-stats':
                 $statsHtml = '';
