@@ -31,7 +31,6 @@
         <div class="card shadow-sm">
             <div class="card-header bg-transparent"><h6 class="fw-bold mb-0">خلاصه</h6></div>
             <div class="card-body">
-                <div class="mb-2"><small class="text-muted">کارت‌ها:</small> <strong>{{ $user->cards->count() }}</strong></div>
                 <div class="mb-2"><small class="text-muted">اشتراک:</small> <strong>{{ $user->subscriptions->first()->plan->name ?? 'ندارد' }}</strong></div>
                 <div class="mb-2"><small class="text-muted">عضویت:</small> <span class="small">{{ \Morilog\Jalali\Jalalian::fromCarbon($user->created_at)->format('Y/m/d') }}</span></div>
             </div>

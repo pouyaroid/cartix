@@ -17,6 +17,11 @@ use chillerlan\QRCode\Output\QRGdImagePNG;
  */
 class QrRenderer
 {
+    public static function isGdAvailable(): bool
+    {
+        return extension_loaded('gd');
+    }
+
     private string $foregroundColor;
     private string $backgroundColor;
     private string $gradientFrom;
@@ -220,96 +225,105 @@ class QrRenderer
             return null;
         }
 
-        $options = new QROptions([
-            'outputInterface'     => QRGdImagePNG::class,
-            'eccLevel'            => $this->errorCorrection,
-            'scale'               => max(1, (int) ($this->size / 50)),
-            'imageBase64'         => false,
-            'outputBase64'        => false,
-            'bgColor'             => $this->hexToRgb($this->backgroundColor),
-            'drawLightModules'    => true,
-            'moduleValues'        => $this->buildModuleValuesForPng(),
-            'quietzoneSize'       => $this->margin,
-            'drawCircularModules' => $this->getDrawCircular(),
-            'circleRadius'        => $this->getCircleRadius(),
-            'keepAsSquare'        => $this->getKeepAsSquare(),
-        ]);
-
-        $qr = new QRCodeGenerator($options);
-        $imageData = $qr->render($this->content);
-
-        $baseImage = @imagecreatefromstring($imageData);
-        if (!$baseImage) {
+        if (!self::isGdAvailable()) {
             return null;
         }
 
-        $baseW = imagesx($baseImage);
-        $baseH = imagesy($baseImage);
+        try {
+            $options = new QROptions([
+                'outputInterface'     => QRGdImagePNG::class,
+                'eccLevel'            => $this->errorCorrection,
+                'scale'               => max(1, (int) ($this->size / 50)),
+                'imageBase64'         => false,
+                'outputBase64'        => false,
+                'bgColor'             => $this->hexToRgb($this->backgroundColor),
+                'drawLightModules'    => true,
+                'moduleValues'        => $this->buildModuleValuesForPng(),
+                'quietzoneSize'       => $this->margin,
+                'drawCircularModules' => $this->getDrawCircular(),
+                'circleRadius'        => $this->getCircleRadius(),
+                'keepAsSquare'        => $this->getKeepAsSquare(),
+            ]);
 
-        $frameExtra = $this->frameStyle !== 'none' ? 30 : 0;
-        $textExtra = !empty($this->text) ? 40 : 0;
-        $textOffset = $this->textPosition === 'top' ? $textExtra : 0;
+            $qr = new QRCodeGenerator($options);
+            $imageData = $qr->render($this->content);
 
-        $totalW = $baseW + ($frameExtra * 2);
-        $totalH = $baseH + ($frameExtra * 2) + $textExtra;
-
-        $canvas = imagecreatetruecolor($totalW, $totalH);
-        $bg = $this->hexToRgb($this->backgroundColor);
-        $bgc = imagecolorallocate($canvas, $bg[0], $bg[1], $bg[2]);
-        imagefill($canvas, 0, 0, $bgc);
-
-        if ($this->frameStyle !== 'none') {
-            $fc = $this->hexToRgb($this->frameColor);
-            $fcr = imagecolorallocate($canvas, $fc[0], $fc[1], $fc[2]);
-            imagesetthickness($canvas, 3);
-            imagerectangle($canvas, 4, 4 + $textOffset, $totalW - 4, $totalH - 4, $fcr);
-            imagesetthickness($canvas, 1);
-        }
-
-        imagecopy($canvas, $baseImage, $frameExtra, $frameExtra + $textOffset, 0, 0, $baseW, $baseH);
-        imagedestroy($baseImage);
-
-        // Logo
-        if ($this->logoPath && file_exists($this->logoPath)) {
-            try {
-                $li = @imagecreatefromstring(file_get_contents($this->logoPath));
-                if ($li) {
-                    $lw = imagesx($li);
-                    $lh = imagesy($li);
-                    $max = (int) (($this->logoSize / 100) * min($baseW, $baseH) * 0.3);
-                    $r = min($max / max($lw, 1), $max / max($lh, 1));
-                    $nw = max(1, (int) ($lw * $r));
-                    $nh = max(1, (int) ($lh * $r));
-                    $sl = imagecreatetruecolor($nw, $nh);
-                    imagecopyresampled($sl, $li, 0, 0, 0, 0, $nw, $nh, $lw, $lh);
-                    $lx = $frameExtra + (int) (($baseW - $nw) / 2);
-                    $ly = $frameExtra + $textOffset + (int) (($baseH - $nh) / 2);
-                    $wb = imagecolorallocate($canvas, 255, 255, 255);
-                    imagefilledrectangle($canvas, $lx - $this->logoPadding, $ly - $this->logoPadding, $lx + $nw + $this->logoPadding, $ly + $nh + $this->logoPadding, $wb);
-                    imagecopy($canvas, $sl, $lx, $ly, 0, 0, $nw, $nh);
-                    imagedestroy($sl);
-                    imagedestroy($li);
-                }
-            } catch (\Throwable) {
+            $baseImage = @imagecreatefromstring($imageData);
+            if (!$baseImage) {
+                return null;
             }
+
+            $baseW = imagesx($baseImage);
+            $baseH = imagesy($baseImage);
+
+            $frameExtra = $this->frameStyle !== 'none' ? 30 : 0;
+            $textExtra = !empty($this->text) ? 40 : 0;
+            $textOffset = $this->textPosition === 'top' ? $textExtra : 0;
+
+            $totalW = $baseW + ($frameExtra * 2);
+            $totalH = $baseH + ($frameExtra * 2) + $textExtra;
+
+            $canvas = imagecreatetruecolor($totalW, $totalH);
+            $bg = $this->hexToRgb($this->backgroundColor);
+            $bgc = imagecolorallocate($canvas, $bg[0], $bg[1], $bg[2]);
+            imagefill($canvas, 0, 0, $bgc);
+
+            if ($this->frameStyle !== 'none') {
+                $fc = $this->hexToRgb($this->frameColor);
+                $fcr = imagecolorallocate($canvas, $fc[0], $fc[1], $fc[2]);
+                imagesetthickness($canvas, 3);
+                imagerectangle($canvas, 4, 4 + $textOffset, $totalW - 4, $totalH - 4, $fcr);
+                imagesetthickness($canvas, 1);
+            }
+
+            imagecopy($canvas, $baseImage, $frameExtra, $frameExtra + $textOffset, 0, 0, $baseW, $baseH);
+            imagedestroy($baseImage);
+
+            // Logo
+            if ($this->logoPath && file_exists($this->logoPath)) {
+                try {
+                    $li = @imagecreatefromstring(file_get_contents($this->logoPath));
+                    if ($li) {
+                        $lw = imagesx($li);
+                        $lh = imagesy($li);
+                        $max = (int) (($this->logoSize / 100) * min($baseW, $baseH) * 0.3);
+                        $r = min($max / max($lw, 1), $max / max($lh, 1));
+                        $nw = max(1, (int) ($lw * $r));
+                        $nh = max(1, (int) ($lh * $r));
+                        $sl = imagecreatetruecolor($nw, $nh);
+                        imagecopyresampled($sl, $li, 0, 0, 0, 0, $nw, $nh, $lw, $lh);
+                        $lx = $frameExtra + (int) (($baseW - $nw) / 2);
+                        $ly = $frameExtra + $textOffset + (int) (($baseH - $nh) / 2);
+                        $wb = imagecolorallocate($canvas, 255, 255, 255);
+                        imagefilledrectangle($canvas, $lx - $this->logoPadding, $ly - $this->logoPadding, $lx + $nw + $this->logoPadding, $ly + $nh + $this->logoPadding, $wb);
+                        imagecopy($canvas, $sl, $lx, $ly, 0, 0, $nw, $nh);
+                        imagedestroy($sl);
+                        imagedestroy($li);
+                    }
+                } catch (\Throwable) {
+                }
+            }
+
+            // Text
+            if (!empty($this->text)) {
+                $tc = $this->hexToRgb($this->textColor);
+                $tcr = imagecolorallocate($canvas, $tc[0], $tc[1], $tc[2]);
+                $tw = imagefontwidth(5) * mb_strlen($this->text);
+                $tx = (int) (($totalW - $tw) / 2);
+                $ty = $this->textPosition === 'top' ? 10 : ($totalH - 20);
+                imagestring($canvas, 5, $tx, $ty, $this->text, $tcr);
+            }
+
+            ob_start();
+            imagepng($canvas);
+            $png = ob_get_clean();
+            imagedestroy($canvas);
+
+            return $png;
+        } catch (\Throwable $e) {
+            report($e);
+            return null;
         }
-
-        // Text
-        if (!empty($this->text)) {
-            $tc = $this->hexToRgb($this->textColor);
-            $tcr = imagecolorallocate($canvas, $tc[0], $tc[1], $tc[2]);
-            $tw = imagefontwidth(5) * mb_strlen($this->text);
-            $tx = (int) (($totalW - $tw) / 2);
-            $ty = $this->textPosition === 'top' ? 10 : ($totalH - 20);
-            imagestring($canvas, 5, $tx, $ty, $this->text, $tcr);
-        }
-
-        ob_start();
-        imagepng($canvas);
-        $png = ob_get_clean();
-        imagedestroy($canvas);
-
-        return $png;
     }
 
     public function toPngDataUri(): string

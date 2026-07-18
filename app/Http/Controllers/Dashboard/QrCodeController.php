@@ -20,12 +20,13 @@ class QrCodeController extends Controller
             ->latest()
             ->paginate(12);
 
-        // Pre-render QR thumbnails using the same renderer as preview/export
+        // Pre-render QR thumbnails using SVG (works without GD extension)
         $qrThumbnails = [];
         foreach ($qrCodes as $qr) {
             try {
-                $qrThumbnails[$qr->id] = QrRenderer::fromModel($qr)->toPngDataUri();
-            } catch (\Throwable) {
+                $qrThumbnails[$qr->id] = QrRenderer::fromModel($qr)->toSvgDataUri();
+            } catch (\Throwable $e) {
+                report($e);
                 $qrThumbnails[$qr->id] = null;
             }
         }
@@ -120,11 +121,12 @@ class QrCodeController extends Controller
             'this_month' => $qrCode->scans()->where('created_at', '>=', now()->subMonth())->count(),
         ];
 
-        // Pre-render using the same renderer as preview/export
+        // Pre-render using SVG for preview (works without GD extension)
         $qrImage = null;
         try {
-            $qrImage = QrRenderer::fromModel($qrCode)->toPngDataUri();
-        } catch (\Throwable) {
+            $qrImage = QrRenderer::fromModel($qrCode)->toSvgDataUri();
+        } catch (\Throwable $e) {
+            report($e);
         }
 
         return view('dashboard.qr-codes.show', compact('qrCode', 'recentScans', 'scanStats', 'qrImage'));
@@ -147,9 +149,7 @@ class QrCodeController extends Controller
         $safeTitle = preg_replace('/[^a-zA-Z0-9_-]/', '-', $qrCode->title);
 
         return match ($format) {
-            'png' => response($renderer->toPng() ?? '')
-                ->header('Content-Type', 'image/png')
-                ->header('Content-Disposition', 'attachment; filename="qr-' . $safeTitle . '.png"'),
+            'png' => $this->downloadPng($renderer, $safeTitle),
             'svg' => response($renderer->toSvg())
                 ->header('Content-Type', 'image/svg+xml')
                 ->header('Content-Disposition', 'attachment; filename="qr-' . $safeTitle . '.svg"'),
@@ -157,15 +157,41 @@ class QrCodeController extends Controller
         };
     }
 
+    private function downloadPng(QrRenderer $renderer, string $safeTitle)
+    {
+        if (!QrRenderer::isGdAvailable()) {
+            return back()->with('error', 'دانلود PNG نیاز به افزونه GD PHP دارد. لطفاً فایل SVG را دانلود کنید یا افزونه GD را نصب کنید.');
+        }
+
+        $png = $renderer->toPng();
+        if ($png === null) {
+            return back()->with('error', 'خطا در تولید تصویر PNG. لطفاً فایل SVG را دانلود کنید.');
+        }
+
+        return response($png)
+            ->header('Content-Type', 'image/png')
+            ->header('Content-Disposition', 'attachment; filename="qr-' . $safeTitle . '.png"');
+    }
+
     public function preview(Request $request)
     {
         try {
             $renderer = QrRenderer::fromLivewire($request->all());
-            $png = $renderer->toPng();
-            if ($png) {
-                return response($png)->header('Content-Type', 'image/png');
+
+            // Prefer PNG if GD is available, fall back to SVG
+            if (QrRenderer::isGdAvailable()) {
+                $png = $renderer->toPng();
+                if ($png) {
+                    return response($png)->header('Content-Type', 'image/png');
+                }
             }
-        } catch (\Throwable) {
+
+            $svg = $renderer->toSvg();
+            if (!empty($svg)) {
+                return response($svg)->header('Content-Type', 'image/svg+xml');
+            }
+        } catch (\Throwable $e) {
+            report($e);
         }
         return response('', 204);
     }

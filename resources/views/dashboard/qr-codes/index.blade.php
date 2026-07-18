@@ -37,9 +37,6 @@
 
                         <div class="d-flex justify-content-between text-muted small mb-3">
                             <span><i class="bi bi-eye ms-1"></i> {{ $qr->scans_count }} اسکن</span>
-                            @if($qr->card)
-                                <span>{{ $qr->card->title }}</span>
-                            @endif
                         </div>
 
                         <div class="d-flex gap-2">

@@ -225,6 +225,11 @@ class QrGenerator extends Component
             return;
         }
 
+        if (!\App\Services\QrRenderer::isGdAvailable()) {
+            $this->dispatch('show-toast', type: 'error', message: 'دانلود PNG نیاز به افزونه GD دارد. لطفاً فایل SVG را دانلود کنید.');
+            return;
+        }
+
         try {
             $png = $this->makeRenderer()->toPng();
             if (!$png) {

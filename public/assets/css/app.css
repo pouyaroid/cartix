@@ -76,38 +76,8 @@ body {
     opacity: 0.7;
 }
 
-/* Card Grid */
-.card-preview {
-    border: 1px solid var(--bs-border-color);
-    border-radius: 0.75rem;
-    overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
-    cursor: pointer;
-}
-
-.card-preview:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1);
-}
-
-.card-preview .card-cover {
-    height: 160px;
-    background-size: cover;
-    background-position: center;
-}
-
-.card-preview .card-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    border: 3px solid var(--bs-body-bg);
-    margin-top: -32px;
-    object-fit: cover;
-}
-
 /* Dark Mode Enhancements */
-[data-bs-theme="dark"] .stat-card:hover,
-[data-bs-theme="dark"] .card-preview:hover {
+[data-bs-theme="dark"] .stat-card:hover {
     box-shadow: 0 0.5rem 1rem rgba(255, 255, 255, 0.05);
 }
 

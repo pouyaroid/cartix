@@ -2,7 +2,7 @@
 
 > **Project**: CardX — QR Code & Digital Card SaaS Platform
 > **Date**: July 18, 2026
-> **Status**: Production-ready SaaS platform (Landing Page Builder removed)
+> **Status**: Production-ready SaaS platform
 
 ---
 
@@ -77,7 +77,7 @@ cardx/
 
 | Directory | Purpose |
 |---|---|
-| `Config/` | Application configuration classes (CardTypeConfig) |
+| `Config/` | Application configuration classes |
 | `Console/Commands/` | Artisan commands (empty after cleanup) |
 | `Contracts/` | Interfaces (empty after cleanup) |
 | `Data/` | Data transfer objects (empty after cleanup) |
@@ -87,7 +87,7 @@ cardx/
 | `Http/Middleware/` | Request middleware (7 custom middleware) |
 | `Jobs/` | Queued jobs (empty) |
 | `Listeners/` | Event listeners (SendWelcomeEmail, UpdateQrScanCount) |
-| `Livewire/` | Livewire components (QrGenerator, Builder/) |
+| `Livewire/` | Livewire components (QrGenerator) |
 | `Mail/` | Mailable classes (4 emails) |
 | `Models/` | Eloquent models (11 models) |
 | `Observers/` | Model observers (empty) |
@@ -454,7 +454,6 @@ layouts/
 |---|---|
 | `admin/` | Admin panel views (dashboard, fonts, plans, roles, settings, users) |
 | `auth/` | Authentication views (login, register, password reset) |
-| `card/` | Card-related views (empty after cleanup) |
 | `components/` | Reusable Blade components |
 | `dashboard/` | User dashboard views (analytics, media, qr-codes, subscription) |
 | `emails/` | Email templates |
@@ -734,12 +733,6 @@ Plan → Subscription → User
 - ✅ Activity logging
 - ✅ Responsive design (Bootstrap + Tailwind)
 
-### Incomplete/Removed
-- ❌ Card Builder (removed)
-- ❌ Landing Page Builder (removed)
-- ❌ Template system (removed)
-- ❌ Public card display (removed)
-
 ### Missing
 - ❌ API endpoints (no api.php)
 - ❌ WebSocket/real-time notifications
@@ -763,9 +756,9 @@ Plan → Subscription → User
 - ✅ Activity logging
 - ✅ Persian localization
 - ✅ Role-based permissions
-
-### In Progress
-- 🔄 Landing Page Builder (planned rebuild)
+- ✅ Card system removed
+- ✅ Landing page builder removed
+- ✅ Template system removed
 
 ### Missing
 - ❌ API for mobile apps
@@ -805,7 +798,6 @@ Plan → Subscription → User
 
 ### Dead Code
 - **Empty directories** — `app/Contracts/`, `app/Data/`, `app\Jobs/`, `app/Observers/`, multiple empty service directories
-- **Empty controller directories** — `app/Http/Controllers/Analytics/`, `Card/`, `Media/`, `Payment/`, `QR/`, `Template/`
 - **Unused config** — `config/permission.php` has wildcard_permission commented out
 
 ### Possible Bugs
@@ -841,7 +833,7 @@ Plan → Subscription → User
 |---|---|
 | Total Models | 11 |
 | Total Controllers | 18 (3 Auth + 6 Dashboard + 6 Admin + 1 Public + 2 empty) |
-| Total Livewire Components | 2 (QrGenerator + Builder) |
+| Total Livewire Components | 1 (QrGenerator) |
 | Total Services | 4 (QrRenderer, PersianFontService, MapProviderFactory + empty dirs) |
 | Total Blade Views | ~50+ (across 12 directories) |
 | Total Routes | ~45 |
@@ -867,6 +859,6 @@ Plan → Subscription → User
 - **Database**: MySQL with 22 tables covering users, QR codes, scans, media, subscriptions, payments, and settings
 - **Architecture**: Standard MVC with Service Layer pattern, organized by domain (Auth, Dashboard, Admin, Public)
 - **Key Features**: QR code generation with live preview, media management, subscription billing, role-based access control, Persian localization
-- **Current State**: Core platform is complete and functional. Card Builder and Landing Page Builder have been removed. The project is ready for new feature development.
+- **Current State**: Core platform is complete and functional. The project is ready for new feature development.
 
 The codebase follows Laravel conventions with clear separation of concerns. The main areas for improvement are: adding comprehensive tests, implementing caching, adding API endpoints, and completing the test suite. The application is production-ready for its current feature set.
