@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\Card;
 use App\Models\QrCode;
 use App\Services\QrRenderer;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -18,7 +17,6 @@ class QrCodeController extends Controller
     public function index()
     {
         $qrCodes = QrCode::where('user_id', auth()->id())
-            ->with('card')
             ->latest()
             ->paginate(12);
 
@@ -37,9 +35,7 @@ class QrCodeController extends Controller
 
     public function create()
     {
-        $cards = Card::where('user_id', auth()->id())->pluck('title', 'id');
-
-        return view('dashboard.qr-codes.create', compact('cards'));
+        return view('dashboard.qr-codes.create');
     }
 
     public function store(Request $request)
@@ -48,7 +44,6 @@ class QrCodeController extends Controller
             'title' => 'required|string|max:255',
             'type' => 'required|in:static,dynamic',
             'content' => 'required|string|max:2048',
-            'card_id' => 'nullable|exists:cards,id',
             // Colors
             'foreground_color' => 'nullable|string|max:7',
             'background_color' => 'nullable|string|max:7',
@@ -116,7 +111,6 @@ class QrCodeController extends Controller
     {
         $this->authorize('view', $qrCode);
 
-        $qrCode->load('card');
         $recentScans = $qrCode->scans()->latest()->take(20)->get();
 
         $scanStats = [

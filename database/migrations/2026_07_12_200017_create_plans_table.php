@@ -15,7 +15,6 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->decimal('price_monthly', 12, 2)->default(0);
             $table->decimal('price_yearly', 12, 2)->default(0);
-            $table->integer('max_cards')->default(3);
             $table->integer('max_qr_codes')->default(5);
             $table->integer('max_storage_mb')->default(50);
             $table->json('features')->nullable();

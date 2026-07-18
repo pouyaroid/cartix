@@ -44,7 +44,6 @@
                         @foreach($plan->features ?? [] as $feature)
                             <li class="mb-1"><i class="bi bi-check-circle-fill text-success ms-1"></i> {{ $feature }}</li>
                         @endforeach
-                        <li class="mb-1"><i class="bi bi-check-circle-fill text-success ms-1"></i> حداکثر {{ $plan->max_cards }} کارت</li>
                         <li class="mb-1"><i class="bi bi-check-circle-fill text-success ms-1"></i> حداکثر {{ $plan->max_qr_codes }} کد QR</li>
                         <li><i class="bi bi-check-circle-fill text-success ms-1"></i> {{ $plan->max_media_storage }} MB فضا</li>
                     </ul>

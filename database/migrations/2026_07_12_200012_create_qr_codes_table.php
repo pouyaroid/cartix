@@ -11,7 +11,6 @@ return new class extends Migration
         Schema::create('qr_codes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('card_id')->nullable()->constrained()->nullOnDelete();
             $table->enum('type', ['static', 'dynamic']);
             $table->string('title');
             $table->text('content');

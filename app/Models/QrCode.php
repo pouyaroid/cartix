@@ -18,7 +18,6 @@ class QrCode extends Model
 
     protected $fillable = [
         'user_id',
-        'card_id',
         'type',
         'title',
         'content',
@@ -95,11 +94,6 @@ class QrCode extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function card(): BelongsTo
-    {
-        return $this->belongsTo(Card::class);
     }
 
     public function qrScans(): HasMany

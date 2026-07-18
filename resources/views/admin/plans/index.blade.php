@@ -13,7 +13,6 @@
                 <h5 class="fw-bold">{{ $plan->name }}</h5>
                 <div class="display-6 fw-bold text-primary my-3">{{ number_format($plan->price_monthly) }}<small class="fs-6"> تومان/ماه</small></div>
                 <ul class="list-unstyled small text-muted">
-                    <li>{{ $plan->max_cards == -1 ? 'نامحدود' : $plan->max_cards }} کارت</li>
                     <li>{{ $plan->max_qr_codes == -1 ? 'نامحدود' : $plan->max_qr_codes }} کد QR</li>
                     <li>{{ $plan->max_storage_mb >= 1024 ? ($plan->max_storage_mb / 1024) . ' گیگابایت' : $plan->max_storage_mb . ' مگابایت' }} فضا</li>
                 </ul>

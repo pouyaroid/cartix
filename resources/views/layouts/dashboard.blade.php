@@ -34,18 +34,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('dashboard.cards.*') ? 'active' : '' }}" href="{{ route('dashboard.cards.index') }}">
-                            <i class="bi bi-card-heading ms-2"></i> کارت‌های من
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('dashboard.qr.*') ? 'active' : '' }}" href="{{ route('dashboard.qr.index') }}">
                             <i class="bi bi-qr-code ms-2"></i> کدهای QR
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('dashboard.landing-pages.*') ? 'active' : '' }}" href="{{ route('dashboard.landing-pages.index') }}">
-                            <i class="bi bi-window-stack ms-2"></i> لندینگ پیج
                         </a>
                     </li>
                     <li class="nav-item">
@@ -88,9 +78,6 @@
                     <button class="btn btn-link nav-link p-1" id="themeToggle" title="تغییر تم">
                         <i class="bi {{ session('theme') === 'dark' ? 'bi-sun' : 'bi-moon' }}"></i>
                     </button>
-                    <a href="{{ route('dashboard.cards.create') }}" class="btn btn-primary btn-sm">
-                        <i class="bi bi-plus-lg ms-1"></i> کارت جدید
-                    </a>
                 </div>
             </nav>
 

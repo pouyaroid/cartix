@@ -43,16 +43,6 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.cards.*') ? 'active' : '' }}" href="{{ route('admin.cards.index') }}">
-                            <i class="bi bi-card-heading ms-2"></i> کارت‌ها
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.templates.*') ? 'active' : '' }}" href="{{ route('admin.templates.index') }}">
-                            <i class="bi bi-layout-text-window ms-2"></i> قالب‌ها
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.fonts.*') ? 'active' : '' }}" href="{{ route('admin.fonts.index') }}">
                             <i class="bi bi-fonts ms-2"></i> فونت‌ها
                         </a>
@@ -60,21 +50,6 @@
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.plans.*') ? 'active' : '' }}" href="{{ route('admin.plans.index') }}">
                             <i class="bi bi-credit-card ms-2"></i> پلن‌ها
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.landing-pages.*') ? 'active' : '' }}" href="{{ route('admin.landing-pages.index') }}">
-                            <i class="bi bi-window-stack ms-2"></i> لندینگ پیج‌ها
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.landing-page-templates.*') ? 'active' : '' }}" href="{{ route('admin.landing-page-templates.index') }}">
-                            <i class="bi bi-layout-text-window ms-2"></i> قالب لندینگ
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.landing-page-widgets.*') ? 'active' : '' }}" href="{{ route('admin.landing-page-widgets.index') }}">
-                            <i class="bi bi-puzzle ms-2"></i> ویجت‌ها
                         </a>
                     </li>
                     <li class="nav-item">

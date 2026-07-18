@@ -12,7 +12,6 @@
             <div class="col-md-4"><label class="form-label">قیمت ماهانه</label><input type="number" class="form-control" name="price_monthly" value="{{ $plan->price_monthly }}"></div>
             <div class="col-md-4"><label class="form-label">قیمت سالانه</label><input type="number" class="form-control" name="price_yearly" value="{{ $plan->price_yearly }}"></div>
             <div class="col-md-4"><label class="form-label">ترتیب</label><input type="number" class="form-control" name="sort_order" value="{{ $plan->sort_order }}"></div>
-            <div class="col-md-4"><label class="form-label">حداکثر کارت</label><input type="number" class="form-control" name="max_cards" value="{{ $plan->max_cards }}"></div>
             <div class="col-md-4"><label class="form-label">حداکثر QR</label><input type="number" class="form-control" name="max_qr_codes" value="{{ $plan->max_qr_codes }}"></div>
             <div class="col-md-4"><label class="form-label">فضا (MB)</label><input type="number" class="form-control" name="max_storage_mb" value="{{ $plan->max_storage_mb }}"></div>
             <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="is_active" value="1" {{ $plan->is_active ? 'checked' : '' }}><label class="form-check-label">فعال</label></div></div>

@@ -47,11 +47,6 @@ class User extends Authenticatable
         ];
     }
 
-    public function cards(): HasMany
-    {
-        return $this->hasMany(Card::class);
-    }
-
     public function qrCodes(): HasMany
     {
         return $this->hasMany(QrCode::class);
@@ -70,11 +65,6 @@ class User extends Authenticatable
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
-    }
-
-    public function landingPages(): HasMany
-    {
-        return $this->hasMany(LandingPage::class);
     }
 
     public function scopeActive(Builder $query): Builder

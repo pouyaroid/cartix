@@ -13,8 +13,6 @@ class PermissionSeeder extends Seeder
     {
         $groups = [
             'users' => ['view', 'create', 'edit', 'delete'],
-            'cards' => ['view', 'create', 'edit', 'delete', 'publish'],
-            'templates' => ['view', 'create', 'edit', 'delete', 'activate'],
             'qr_codes' => ['view', 'create', 'edit', 'delete', 'download'],
             'media' => ['view', 'upload', 'delete', 'rename'],
             'fonts' => ['view', 'upload', 'delete', 'activate'],

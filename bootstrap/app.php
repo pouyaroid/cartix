@@ -18,7 +18,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'active-account' => \App\Http\Middleware\ActiveAccountMiddleware::class,
             'verified-phone' => \App\Http\Middleware\VerifiedPhoneMiddleware::class,
             'subscription' => \App\Http\Middleware\SubscriptionMiddleware::class,
-            'card-owner' => \App\Http\Middleware\CardOwnerMiddleware::class,
             'locale' => \App\Http\Middleware\SetLocale::class,
         ]);
 

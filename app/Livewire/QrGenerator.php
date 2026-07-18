@@ -16,7 +16,6 @@ class QrGenerator extends Component
     public $title = '';
     public $type = 'static';
     public $content = 'https://';
-    public $cardId = '';
 
     // Colors
     public $foregroundColor = '#000000';
@@ -63,15 +62,8 @@ class QrGenerator extends Component
     public $previewImage = null;
     public $generating = false;
 
-    // Data
-    public $cards = [];
-
     public function mount(): void
     {
-        $this->cards = \App\Models\Card::where('user_id', auth()->id())
-            ->pluck('title', 'id')
-            ->toArray();
-
         $this->updatePreview();
     }
 
@@ -292,7 +284,6 @@ class QrGenerator extends Component
 
         $data = [
             'user_id'           => auth()->id(),
-            'card_id'           => $this->cardId ?: null,
             'type'              => $this->type,
             'title'             => $this->title,
             'content'           => $this->content,

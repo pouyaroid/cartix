@@ -20,7 +20,7 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        $user->load(['cards', 'subscriptions.plan', 'roles']);
+        $user->load(['subscriptions.plan', 'roles']);
         $roles = Role::all();
 
         return view('admin.users.show', compact('user', 'roles'));

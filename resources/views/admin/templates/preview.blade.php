@@ -28,5 +28,10 @@
     </div>
 </div>
 
-<x-card-render.preview-frame :card="$sampleCard" mode="desktop" title="پیش‌نمایش قالب: {{ $template->name }}" :previewUrl="route('admin.templates.preview', $template)" />
+<div class="card border-0 shadow-sm">
+    <div class="card-body text-center py-5">
+        <i class="bi bi-eye" style="font-size:3rem;color:#d1d5db"></i>
+        <p class="mt-3 text-muted">پیش‌نمایش قالب</p>
+    </div>
+</div>
 @endsection

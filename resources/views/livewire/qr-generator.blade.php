@@ -43,13 +43,6 @@
                                 @error('content') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label fw-medium">مرتبط با کارت</label>
-                                <select class="form-select" wire:model.live="cardId">
-                                    <option value="">بدون کارت</option>
-                                    @foreach($cards as $id => $title)
-                                        <option value="{{ $id }}">{{ $title }}</option>
-                                    @endforeach
-                                </select>
                             </div>
                         </div>
                     </div>

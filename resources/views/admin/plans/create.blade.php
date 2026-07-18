@@ -12,7 +12,6 @@
             <div class="col-md-4"><label class="form-label">قیمت ماهانه (تومان)</label><input type="number" class="form-control" name="price_monthly" value="0"></div>
             <div class="col-md-4"><label class="form-label">قیمت سالانه (تومان)</label><input type="number" class="form-control" name="price_yearly" value="0"></div>
             <div class="col-md-4"><label class="form-label">ترتیب</label><input type="number" class="form-control" name="sort_order" value="0"></div>
-            <div class="col-md-4"><label class="form-label">حداکثر کارت</label><input type="number" class="form-control" name="max_cards" value="3"></div>
             <div class="col-md-4"><label class="form-label">حداکثر QR</label><input type="number" class="form-control" name="max_qr_codes" value="5"></div>
             <div class="col-md-4"><label class="form-label">فضا (مگابایت)</label><input type="number" class="form-control" name="max_storage_mb" value="50"></div>
             <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="is_active" value="1" checked><label class="form-check-label">فعال</label></div></div>

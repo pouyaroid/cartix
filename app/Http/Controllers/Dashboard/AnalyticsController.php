@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\Card;
 use App\Models\QrCode;
 use App\Models\QrScan;
 use Illuminate\Http\Request;
@@ -18,7 +17,6 @@ class AnalyticsController extends Controller
         $user = auth()->user();
 
         $stats = [
-            'total_views' => Card::where('user_id', $user->id)->sum('views_count'),
             'total_scans' => QrCode::where('user_id', $user->id)->sum('scans_count'),
             'scans_today' => QrScan::whereHas('qrCode', fn($q) => $q->where('user_id', $user->id))
                 ->whereDate('created_at', today())->count(),
@@ -28,17 +26,12 @@ class AnalyticsController extends Controller
                 ->where('created_at', '>=', now()->subMonth())->count(),
         ];
 
-        $topCards = Card::where('user_id', $user->id)
-            ->orderByDesc('views_count')
-            ->take(5)
-            ->get(['id', 'title', 'slug', 'views_count']);
-
         $topQr = QrCode::where('user_id', $user->id)
             ->orderByDesc('scans_count')
             ->take(5)
             ->get(['id', 'title', 'scans_count']);
 
-        return view('dashboard.analytics.index', compact('stats', 'topCards', 'topQr'));
+        return view('dashboard.analytics.index', compact('stats', 'topQr'));
     }
 
     public function data(Request $request)

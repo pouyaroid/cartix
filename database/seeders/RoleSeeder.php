@@ -24,8 +24,6 @@ class RoleSeeder extends Seeder
         $manager = Role::firstOrCreate(['name' => 'manager']);
         $manager->syncPermissions([
             'users.view',
-            'cards.view', 'cards.create', 'cards.edit', 'cards.publish',
-            'templates.view',
             'qr_codes.view', 'qr_codes.create', 'qr_codes.edit', 'qr_codes.download',
             'media.view', 'media.upload',
             'analytics.view',
@@ -36,7 +34,6 @@ class RoleSeeder extends Seeder
         $support = Role::firstOrCreate(['name' => 'support']);
         $support->syncPermissions([
             'users.view',
-            'cards.view',
             'qr_codes.view',
             'analytics.view',
             'reports.view',
@@ -45,7 +42,6 @@ class RoleSeeder extends Seeder
         // Customer
         $customer = Role::firstOrCreate(['name' => 'customer']);
         $customer->syncPermissions([
-            'cards.view', 'cards.create', 'cards.edit', 'cards.delete',
             'qr_codes.view', 'qr_codes.create', 'qr_codes.delete', 'qr_codes.download',
             'media.view', 'media.upload', 'media.delete',
             'analytics.view',

@@ -22,17 +22,6 @@
         <div class="col-sm-6 col-xl-3">
             <div class="card stat-card shadow-sm">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="stat-icon bg-success-subtle text-success"><i class="bi bi-card-heading"></i></div>
-                    <div>
-                        <div class="stat-value">{{ number_format($stats['cards']) }}</div>
-                        <div class="stat-label">کارت‌ها</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="card stat-card shadow-sm">
-                <div class="card-body d-flex align-items-center gap-3">
                     <div class="stat-icon bg-warning-subtle text-warning"><i class="bi bi-qr-code"></i></div>
                     <div>
                         <div class="stat-value">{{ number_format($stats['qr_codes']) }}</div>

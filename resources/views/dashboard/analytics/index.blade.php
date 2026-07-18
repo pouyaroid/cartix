@@ -7,12 +7,6 @@
 <div class="row g-3 mb-4">
     <div class="col-md-3">
         <div class="card border-0 shadow-sm text-center p-3">
-            <div class="text-muted small">کل بازدید کارت</div>
-            <div class="fw-bold fs-4">{{ number_format($stats['total_views']) }}</div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm text-center p-3">
             <div class="text-muted small">کل اسکن QR</div>
             <div class="fw-bold fs-4">{{ number_format($stats['total_scans']) }}</div>
         </div>
@@ -21,6 +15,12 @@
         <div class="card border-0 shadow-sm text-center p-3">
             <div class="text-muted small">امروز</div>
             <div class="fw-bold fs-4">{{ number_format($stats['scans_today']) }}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <div class="text-muted small">این هفته</div>
+            <div class="fw-bold fs-4">{{ number_format($stats['scans_this_week']) }}</div>
         </div>
     </div>
     <div class="col-md-3">
@@ -49,17 +49,17 @@
         </div>
     </div>
 
-    {{-- Top Cards --}}
+    {{-- Top QR Codes --}}
     <div class="col-lg-4">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-transparent">
-                <h6 class="fw-bold mb-0">پربازدیدترین کارت‌ها</h6>
+                <h6 class="fw-bold mb-0">پربازدیدترین کدهای QR</h6>
             </div>
             <div class="card-body p-0">
-                @forelse($topCards as $card)
+                @forelse($topQr as $qr)
                     <div class="d-flex align-items-center justify-content-between px-3 py-2 {{ !$loop->last ? 'border-bottom' : '' }}">
-                        <div class="text-truncate">{{ $card->title }}</div>
-                        <span class="badge bg-primary">{{ number_format($card->views_count) }}</span>
+                        <div class="text-truncate">{{ $qr->title }}</div>
+                        <span class="badge bg-primary">{{ number_format($qr->scans_count) }}</span>
                     </div>
                 @empty
                     <div class="text-center py-3 text-muted small">داده‌ای موجود نیست</div>
@@ -104,7 +104,6 @@ function loadCharts() {
     fetch('{{ route("dashboard.analytics.data") }}?period=' + period)
         .then(r => r.json())
         .then(data => {
-            // Daily Chart
             new Chart(document.getElementById('scansChart'), {
                 type: 'line',
                 data: {
@@ -121,7 +120,6 @@ function loadCharts() {
                 options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
             });
 
-            // Device Chart
             new Chart(document.getElementById('deviceChart'), {
                 type: 'doughnut',
                 data: {
@@ -131,7 +129,6 @@ function loadCharts() {
                 options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
             });
 
-            // Browser Chart
             new Chart(document.getElementById('browserChart'), {
                 type: 'pie',
                 data: {

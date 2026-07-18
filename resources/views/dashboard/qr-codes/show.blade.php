@@ -40,9 +40,6 @@
                     <div class="mb-2"><span class="text-muted">رنگ پیش‌زمینه:</span> <span class="d-inline-block rounded" style="width:16px;height:16px;background:{{ $qrCode->foreground_color }};vertical-align:middle;"></span> {{ $qrCode->foreground_color }}</div>
                     <div class="mb-2"><span class="text-muted">رنگ پس‌زمینه:</span> <span class="d-inline-block rounded" style="width:16px;height:16px;background:{{ $qrCode->background_color }};border:1px solid #ddd;vertical-align:middle;"></span> {{ $qrCode->background_color }}</div>
                     <div class="mb-2"><span class="text-muted">اندازه:</span> {{ $qrCode->size }}px</div>
-                    @if($qrCode->card)
-                        <div class="mb-2"><span class="text-muted">مرتبط با:</span> <a href="{{ route('dashboard.cards.builder', $qrCode->card) }}">{{ $qrCode->card->title }}</a></div>
-                    @endif
                     <div><span class="text-muted">تاریخ ساخت:</span> {{ \Morilog\Jalali\Jalalian::fromCarbon($qrCode->created_at)->format('Y/m/d') }}</div>
                 </div>
             </div>

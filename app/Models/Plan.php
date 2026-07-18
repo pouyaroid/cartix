@@ -20,11 +20,9 @@ class Plan extends Model
         'price_monthly',
         'price_yearly',
         'features',
-        'max_cards',
         'max_qr_codes',
         'max_media_storage',
         'max_templates',
-        'max_landing_pages',
         'is_active',
         'sort_order',
     ];
@@ -37,11 +35,9 @@ class Plan extends Model
             'price_yearly' => 'decimal:2',
             'is_active' => 'boolean',
             'sort_order' => 'integer',
-            'max_cards' => 'integer',
             'max_qr_codes' => 'integer',
             'max_media_storage' => 'integer',
             'max_templates' => 'integer',
-            'max_landing_pages' => 'integer',
         ];
     }
 
