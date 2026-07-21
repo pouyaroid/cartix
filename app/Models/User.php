@@ -67,6 +67,11 @@ class User extends Authenticatable
         return $this->hasMany(Payment::class);
     }
 
+    public function cards(): HasMany
+    {
+        return $this->hasMany(Card::class);
+    }
+
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);

@@ -38,6 +38,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.cards.*') ? 'active' : '' }}" href="{{ route('admin.cards.index') }}">
+                            <i class="bi bi-card-heading ms-2"></i> کارت‌ها
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}" href="{{ route('admin.roles.index') }}">
                             <i class="bi bi-shield-lock ms-2"></i> نقش‌ها و دسترسی‌ها
                         </a>

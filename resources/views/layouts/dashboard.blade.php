@@ -39,6 +39,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('dashboard.cards.*') ? 'active' : '' }}" href="{{ route('dashboard.cards.index') }}">
+                            <i class="bi bi-card-heading ms-2"></i> کارت‌ها
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('dashboard.media.*') ? 'active' : '' }}" href="{{ route('dashboard.media.index') }}">
                             <i class="bi bi-folder2-open ms-2"></i> مدیر فایل
                         </a>

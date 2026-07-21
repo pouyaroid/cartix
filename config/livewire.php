@@ -16,17 +16,24 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'temporary_file_upload' => [
-        'disk' => null,
-        'rules' => 'file|max:12288',
-        'directory' => null,
-        'middleware' => null,
-        'preview_mimes' => [
-            'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml',
-        ],
-        'max_upload_time' => 5,
-        'cleanup' => true,
+  'temporary_file_upload' => [
+    'disk' => null,
+    'rules' => 'file|max:12288',
+    'directory' => null,
+    'middleware' => null,
+
+    'preview_mimes' => [
+        'jpg',
+        'jpeg',
+        'png',
+        'gif',
+        'webp',
+        'svg',
     ],
+
+    'max_upload_time' => 5,
+    'cleanup' => true,
+],
 
     /*
     |--------------------------------------------------------------------------

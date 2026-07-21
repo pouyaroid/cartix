@@ -14,7 +14,9 @@
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "*",
         "morilog/jalali": "*",
+        "spatie/browsershot": "*",
         "spatie/laravel-activitylog": "^4.12",
+        "spatie/laravel-medialibrary": "*",
         "spatie/laravel-permission": "^6.25"
     },
     "require-dev": {
