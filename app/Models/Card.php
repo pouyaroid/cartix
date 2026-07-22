@@ -17,6 +17,36 @@ class Card extends Model implements HasMedia
 {
     use HasFactory, SoftDeletes, HasActivityLog, InteractsWithMedia;
 
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function (Card $card) {
+            if (empty($card->slug)) {
+                $card->slug = $card->generateUniqueSlug();
+            }
+        });
+    }
+
+    public function generateUniqueSlug(): string
+    {
+        $slug = \Str::slug($this->title ?? 'card');
+        $originalSlug = $slug;
+        $counter = 1;
+
+        while (static::withoutGlobalScopes()->where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+        }
+
+        return $slug;
+    }
+
+    public function getShareableUrlAttribute(): string
+    {
+        return route('card.show', $this->slug);
+    }
+
     public function getMediaModel(): string
     {
         return SpatieMedia::class;
@@ -25,6 +55,7 @@ class Card extends Model implements HasMedia
     protected $fillable = [
         'user_id',
         'title',
+        'slug',
         'description',
         'status',
         'canvas_width',

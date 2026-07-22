@@ -22,23 +22,6 @@
                     </a>
                 </div>
                 <div class="card-body text-center bg-light">
-                    @if($card->getFirstMedia('final-image'))
-                        <img src="{{ $card->getFirstMedia('final-image')->getUrl() }}" alt="{{ $card->title }}" class="img-fluid rounded shadow-sm" style="max-height:500px">
-                    @else
-                        <div class="d-flex align-items-center justify-content-center bg-white rounded border" style="min-height:400px">
-                            <div class="text-center text-muted">
-                                <i class="bi bi-image display-1 d-block mb-2"></i>
-                                <p>تصویر نهایی تولید نشده است</p>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-            </div>
-
-            {{-- Canvas Preview --}}
-            <div class="card shadow-sm mt-3">
-                <div class="card-header bg-transparent"><h6 class="mb-0 fw-bold">پیش‌نمایش طراحی</h6></div>
-                <div class="card-body text-center bg-light">
                     <canvas id="previewCanvas" width="{{ $card->canvas_width }}" height="{{ $card->canvas_height }}"></canvas>
                 </div>
             </div>

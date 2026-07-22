@@ -19,30 +19,6 @@
                 </div>
             </div>
             <div class="card-body text-center bg-light">
-                @if($card->getFirstMedia('final-image'))
-                    <img src="{{ $card->getFirstMedia('final-image')->getUrl() }}"
-                         alt="{{ $card->title }}" class="img-fluid rounded shadow-sm"
-                         style="max-height: 500px;">
-                @else
-                    <div class="d-flex align-items-center justify-content-center bg-white rounded border"
-                         style="min-height: 400px;">
-                        <div class="text-center text-muted">
-                            <i class="bi bi-image display-1 d-block mb-2"></i>
-                            <p>تصویر نهایی تولید نشده است</p>
-                            <a href="{{ route('dashboard.cards.edit', $card) }}" class="btn btn-primary btn-sm">
-                                <i class="bi bi-pencil me-1"></i> ویرایش و تولید تصویر
-                            </a>
-                        </div>
-                    </div>
-                @endif
-            </div>
-        </div>
-
-        <div class="card shadow-sm mt-3">
-            <div class="card-header bg-transparent">
-                <h6 class="mb-0 fw-bold">پیش‌نمایش طراحی</h6>
-            </div>
-            <div class="card-body text-center bg-light">
                 <canvas id="previewCanvas" width="{{ $card->canvas_width }}" height="{{ $card->canvas_height }}"></canvas>
             </div>
         </div>
@@ -70,6 +46,25 @@
                 </table>
             </div>
         </div>
+
+        @if($card->slug)
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-transparent">
+                <h6 class="mb-0 fw-bold">لینک اشتراک‌گذاری</h6>
+            </div>
+            <div class="card-body">
+                <div class="input-group input-group-sm">
+                    <input type="text" class="form-control form-control-sm" value="{{ $card->shareable_url }}" readonly id="shareLink">
+                    <button class="btn btn-outline-primary" type="button" onclick="navigator.clipboard.writeText(document.getElementById('shareLink').value); Swal.fire({icon:'success',title:'کپی شد!',timer:1500,showConfirmButton:false});">
+                        <i class="bi bi-clipboard"></i>
+                    </button>
+                    <a href="{{ $card->shareable_url }}" target="_blank" class="btn btn-outline-secondary">
+                        <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        @endif
 
         <div class="card shadow-sm">
             <div class="card-body d-grid gap-2">

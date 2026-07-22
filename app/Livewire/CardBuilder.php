@@ -8,7 +8,6 @@ use App\Models\Card;
 use App\Models\Font;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
-use Spatie\Browsershot\Browsershot;
 
 class CardBuilder extends Component
 {
@@ -30,12 +29,11 @@ class CardBuilder extends Component
     public bool $textItalic = false;
     public bool $textUnderline = false;
     public bool $saving = false;
-    public bool $generating = false;
     public string $activeTab = 'text';
     public array $fonts = [];
     public ?string $loadedDesignData = null;
     public string $designDataPayload = '';
-    public string $canvasDataUrl = '';
+    public ?string $shareableUrl = null;
 
     protected array $rules = [
         'title' => 'required|string|max:255',
@@ -79,6 +77,7 @@ class CardBuilder extends Component
         $this->gradientColor2 = $card->settings['gradient_color2'] ?? '#000000';
         $this->gradientAngle = $card->settings['gradient_angle'] ?? 0;
         $this->loadedDesignData = json_encode($card->design_data);
+        $this->shareableUrl = $card->shareable_url;
     }
 
     public function save(): void
@@ -115,6 +114,7 @@ class CardBuilder extends Component
             );
 
             $this->cardId = $card->id;
+            $this->shareableUrl = $card->shareable_url;
             $this->dispatch('show-toast', type: 'success', message: 'کارت با موفقیت ذخیره شد.');
         } catch (\Throwable $e) {
             Log::error('Card save failed: ' . $e->getMessage());
@@ -124,7 +124,7 @@ class CardBuilder extends Component
         }
     }
 
-    public function generateImage(): void
+    public function copyShareLink(): void
     {
         if (!$this->cardId) {
             $this->save();
@@ -135,56 +135,10 @@ class CardBuilder extends Component
             return;
         }
 
-        $this->generating = true;
-
-        try {
-            $card = Card::find($this->cardId);
-            if (!$card) {
-                throw new \RuntimeException('کارت یافت نشد.');
-            }
-
-            $dataUrl = $this->canvasDataUrl;
-            if (empty($dataUrl)) {
-                throw new \RuntimeException('داده canvas دریافت نشد.');
-            }
-
-            $width = $card->canvas_width;
-            $height = $card->canvas_height;
-
-            $html = <<<HTML
-<!DOCTYPE html>
-<html>
-<head><meta charset="UTF-8">
-<style>* { margin:0; padding:0; } body { width:{$width}px; height:{$height}px; overflow:hidden; }
-img { width:{$width}px; height:{$height}px; display:block; }</style>
-</head>
-<body><img src="{$dataUrl}" /></body>
-</html>
-HTML;
-
-            $tempFile = tempnam(sys_get_temp_dir(), 'card_') . '.png';
-
-            Browsershot::html($html)
-                ->windowSize($width, $height)
-                ->noSandbox()
-                ->disableGpu()
-                ->disableExtensions()
-                ->timeout(30000)
-                ->save($tempFile);
-
-            $card->clearMediaCollection('final-image');
-            $card->addMedia($tempFile)
-                ->usingName($card->title . '-final')
-                ->usingFileName('card-' . $card->id . '-' . time() . '.png')
-                ->toMediaCollection('final-image');
-
-            @unlink($tempFile);
-            $this->dispatch('show-toast', type: 'success', message: 'تصویر نهایی با موفقیت تولید شد.');
-        } catch (\Throwable $e) {
-            Log::error('Card image generation failed: ' . $e->getMessage());
-            $this->dispatch('show-toast', type: 'error', message: 'خطا در تولید تصویر نهایی.');
-        } finally {
-            $this->generating = false;
+        $card = Card::find($this->cardId);
+        if ($card) {
+            $this->shareableUrl = $card->shareable_url;
+            $this->dispatch('show-toast', type: 'success', message: 'لینک کپی شد.');
         }
     }
 

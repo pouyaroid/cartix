@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\FontController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Public\QrRedirectController;
+use App\Http\Controllers\Public\CardController as PublicCardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,6 +32,8 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/qr/{code}', [QrRedirectController::class, 'redirect'])->name('qr.redirect');
+
+Route::get('/card/{slug}', [PublicCardController::class, 'show'])->name('card.show');
 
 /*
 |--------------------------------------------------------------------------

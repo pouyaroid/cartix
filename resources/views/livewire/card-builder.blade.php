@@ -235,14 +235,17 @@
                             <span class="spinner-border spinner-border-sm"></span> در حال ذخیره...
                         </span>
                     </button>
-                    <button onclick="window.syncAndCall('generateImage')" class="btn btn-warning btn-sm" wire:loading.attr="disabled">
-                        <span wire:loading.remove wire:target="generateImage">
-                            <i class="bi bi-image me-1"></i> تولید تصویر نهایی
-                        </span>
-                        <span wire:loading wire:target="generateImage">
-                            <span class="spinner-border spinner-border-sm"></span> در حال تولید...
-                        </span>
-                    </button>
+                    @if($shareableUrl)
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control form-control-sm" value="{{ $shareableUrl }}" readonly id="shareableUrlInput">
+                            <button class="btn btn-outline-primary" type="button" onclick="navigator.clipboard.writeText(document.getElementById('shareableUrlInput').value);">
+                                <i class="bi bi-clipboard"></i>
+                            </button>
+                            <a href="{{ $shareableUrl }}" target="_blank" class="btn btn-outline-secondary">
+                                <i class="bi bi-box-arrow-up-right"></i>
+                            </a>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

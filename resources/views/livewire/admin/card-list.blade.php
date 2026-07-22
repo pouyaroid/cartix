@@ -67,14 +67,14 @@
                         <tr>
                             <td class="text-center">{{ $card->id }}</td>
                             <td class="text-center">
-                                @if($card->getFirstMedia('final-image'))
-                                    <img src="{{ $card->getFirstMedia('final-image')->getUrl('thumbnail') ?? $card->getFirstMedia('final-image')->getUrl() }}"
-                                         alt="{{ $card->title }}" class="rounded" style="width:60px;height:45px;object-fit:cover">
-                                @else
-                                    <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width:60px;height:45px">
-                                        <i class="bi bi-image text-muted"></i>
-                                    </div>
-                                @endif
+                                <canvas class="admin-card-preview"
+                                        data-card-id="{{ $card->id }}"
+                                        data-width="{{ $card->canvas_width }}"
+                                        data-height="{{ $card->canvas_height }}"
+                                        data-bg="{{ $card->settings['background_color'] ?? '#ffffff' }}"
+                                        data-design="{{ htmlspecialchars(json_encode($card->design_data ?? ['objects' => []])) }}"
+                                        style="width:60px;height:45px">
+                                </canvas>
                             </td>
                             <td>
                                 <a href="{{ route('admin.cards.show', $card) }}" class="text-decoration-none fw-bold">{{ $card->title }}</a>
@@ -115,4 +115,49 @@
         <div class="card-footer bg-transparent">{{ $cards->links() }}</div>
         @endif
     </div>
+
+    @script
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <script>
+        function initAdminPreviews() {
+            document.querySelectorAll('.admin-card-preview').forEach(function(el) {
+                if (el.dataset.rendered) return;
+                var w = parseInt(el.dataset.width) || 900;
+                var h = parseInt(el.dataset.height) || 600;
+                var bg = el.dataset.bg || '#ffffff';
+                var design;
+                try { design = JSON.parse(el.dataset.design); } catch(e) { design = null; }
+
+                var displayW = 60;
+                var displayH = 45;
+
+                var c = new fabric.Canvas(el, {
+                    width: displayW,
+                    height: displayH,
+                    backgroundColor: bg,
+                    selection: false,
+                    readOnly: true,
+                });
+
+                c.setZoom(displayW / w);
+                c.setWidth(displayW);
+                c.setHeight(displayH);
+
+                if (design && design.objects && design.objects.length > 0) {
+                    c.loadFromJSON(design, function() {
+                        c.setZoom(displayW / w);
+                        c.setWidth(displayW);
+                        c.setHeight(displayH);
+                        c.forEachObject(function(obj) { obj.selectable = false; obj.evented = false; });
+                        c.renderAll();
+                    });
+                }
+                el.dataset.rendered = '1';
+            });
+        }
+
+        initAdminPreviews();
+        $wire.on('render', () => setTimeout(initAdminPreviews, 100));
+    </script>
+    @endscript
 </div>
